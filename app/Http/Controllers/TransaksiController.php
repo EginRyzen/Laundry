@@ -130,7 +130,6 @@ class TransaksiController extends Controller
         $number = 0;
 
         foreach (session('cart') as $key => $value) {
-
             if ($user->role == 'admin') {
                 if ($data = $request->dibayar == 'bayar') {
                     $data = [
@@ -184,10 +183,10 @@ class TransaksiController extends Controller
                 // dd($bayar);
 
                 DetailTransaksi::create($bayar);
-            }
 
-            session()->forget('cart');
-            return back()->with('pesan', 'Transaksi Yang Anda Lakukan Berhasil');
+                session()->forget('cart');
+                return back()->with('pesan', 'Transaksi Yang Anda Lakukan Berhasil');
+            }
         }
 
 

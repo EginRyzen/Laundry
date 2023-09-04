@@ -12,7 +12,7 @@ class AuthController extends Controller
     public function index()
     {
         $users = User::join('outlets', 'users.id_outlet', '=', 'outlets.id')
-            ->select(['outlets.*', 'users.username', 'users.email', 'users.role', 'users.id', 'users.id'])->get();
+            ->select(['outlets.*', 'users.username', 'users.email', 'users.role', 'users.id', 'users.id', 'users.foto'])->get();
 
         $outlets = Outlet::all();
 
@@ -45,27 +45,27 @@ class AuthController extends Controller
     }
     public function postregisteradmin(Request $request)
     {
-        User::create([
-            'nama' => $request->nama,
-            'username' => $request->username,
-            'id_outlet' => $request->id_outlet,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-            'role' => $request->role
+        $request->validate([
+            'foto' => 'required|image'
         ]);
 
-        return back();
-    }
-    public function postregisterkasir(Request $request)
-    {
-        User::create([
+        $nfile = $request->file('foto')->getClientOriginalName();
+
+        $request->foto->move(public_path('foto'), $nfile);
+
+        $data = [
             'nama' => $request->nama,
             'username' => $request->username,
             'id_outlet' => $request->id_outlet,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            'role' => $request->role
-        ]);
+            'role' => $request->role,
+            'foto' => $nfile,
+        ];
+
+        // dd($data);
+
+        User::create($data);
 
         return back();
     }
@@ -82,14 +82,24 @@ class AuthController extends Controller
 
     public function updatepelanggan(Request $request, $id)
     {
-        User::where('id', $id)->update([
-            'nama' => $request->nama,
-            'username' => $request->username,
-            'id_outlet' => $request->id_outlet,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-            'role' => $request->role
-        ]);
+        if (isset($request->password)) {
+            User::where('id', $id)->update([
+                'nama' => $request->nama,
+                'username' => $request->username,
+                'id_outlet' => $request->id_outlet,
+                'email' => $request->email,
+                'password' => bcrypt($request->password),
+                'role' => $request->role
+            ]);
+        } else {
+            User::where('id', $id)->update([
+                'nama' => $request->nama,
+                'username' => $request->username,
+                'id_outlet' => $request->id_outlet,
+                'email' => $request->email,
+                'role' => $request->role
+            ]);
+        }
 
         return redirect('laundry/selectpelanggan');
     }

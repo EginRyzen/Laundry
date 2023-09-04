@@ -35,8 +35,8 @@
                         @foreach ( $users as $user )
                         <tr>
                             <td>{{ $no++ }}.</td>
+                            <td><img src="{{ asset('foto/'.$user->foto) }}" alt="" style="width: 50px;border-radius: 50%"></td>
                             <td>{{ $user->nama }}</td>
-                            <td>{{ $user->alamat }}</td>
                             <td>{{ $user->username }}</td>
                             <td>{{ $user->email }}</td>
                             <td>{{ $user->role }}</td>

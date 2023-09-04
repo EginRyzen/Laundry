@@ -24,7 +24,7 @@
                     </div>
                     <div class="form-group mb-3">
                         <select class="form-control form-select" name="jenis" id="exampleSelect" placeholder="Select Option">
-                                <option value="{{ $pakets->jenis }}" selected>{{ $pakets->jenis }}</option>
+                                <option value="{{ $pakets->jenis }}" selected disabled>{{ $pakets->jenis }}</option>
                                 <option value="kiloan">Kiloan</option>
                                 <option value="selimut">Selimut</option>
                                 <option value="kaos">Kaos</option>
