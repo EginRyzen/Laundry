@@ -9,7 +9,7 @@
                     <div class="col-md-2 mt-2">
                         <span class="ml-3">Add Paket</span>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-7">
                         <select name="id_paket" id="" class="form-control form-select" onchange="this.form.submit()">
                             <option value="" disabled selected>---- Pilih Paket ---</option>
                             @foreach($pakets as $paket)

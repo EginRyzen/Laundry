@@ -95,28 +95,15 @@ class TransaksiController extends Controller
         if ($user->role == 'admin') {
 
             $pakets = Paket::all();
+            // $outlets = Outlet::all();
 
-            $transaksi = Transaksi::join('members', 'transaksis.id_member', '=', 'members.id')
-                // ->where('transaksis.id_outlet', $user->id_outlet)
-                ->select(['transaksis.*', 'members.*'])
-                ->orderBy('transaksis.created_at', 'desc') // Menentukan tabel untuk kolom created_at
-                ->take(5)
-                ->get();
-
-            return view('Transaksi.transaksi', compact('pakets', 'members', 'transaksi'));
+            return view('Transaksi.transaksi', compact('pakets', 'members'));
         }
         if ($user->role == 'kasir') {
 
             $pakets = Paket::where('id_outlet', $user->id_outlet)->get();
 
-            $transaksi = Transaksi::join('members', 'transaksis.id_member', '=', 'members.id')
-                ->where('transaksis.id_outlet', $user->id_outlet)
-                ->select(['transaksis.*', 'members.*'])
-                ->orderBy('transaksis.created_at', 'desc') // Menentukan tabel untuk kolom created_at
-                ->take(5)
-                ->get();
-
-            return view('Transaksi.transaksi', compact('pakets', 'members', 'transaksi'));
+            return view('Transaksi.transaksi', compact('pakets', 'members'));
         }
     }
 
@@ -142,66 +129,129 @@ class TransaksiController extends Controller
 
         $number = 0;
 
-        // $pakets = Paket::where('id', $request->id_paket)->first();
-        // $pakets = Paket::where('id_outlet', $user->id_outlet)->find($request->id_paket);
-
-        if ($data = $request->dibayar == 'bayar') {
-            $data = [
-                'id_outlet' => $user->id_outlet,
-                'id_member' => $request->id_member,
-                'id_user' => $user->id,
-                'tgl' => now(),
-                'batas_waktu' => $request->batas_waktu,
-                'tgl_bayar' => now(),
-                'biaya_tambahan' => $request->biaya_tambahan,
-                'diskon' => $request->diskon,
-                // 'pajak' => $request->pajak,
-                // 'status' => $request->status,
-                'dibayar' => $request->dibayar,
-
-            ];
-        } else if ($data = $request->dibayar == 'belum_bayar') {
-            $data = [
-                'id_outlet' => $user->id_outlet,
-                'id_member' => $request->id_member,
-                'id_user' => $user->id,
-                'tgl' => now(),
-                'batas_waktu' => $request->batas_waktu,
-                // 'tgl_bayar' => now(),
-                'biaya_tambahan' => $request->biaya_tambahan,
-                'diskon' => $request->diskon,
-                // 'pajak' => $request->pajak,
-                // 'status' => $request->status,
-                'dibayar' => $request->dibayar,
-
-            ];
-        }
-
-        // dd($data);
-
-        $transaksi = Transaksi::create($data);
-
         foreach (session('cart') as $key => $value) {
-            $total = $number + $value['harga'] * $value['jumlah'] + ($request['biaya_tambahan'] - $request['diskon']);
 
-            // dd($total);
+            if ($user->role == 'admin') {
+                if ($data = $request->dibayar == 'bayar') {
+                    $data = [
+                        'id_outlet' => $value['id_outlet'],
+                        'id_member' => $request->id_member,
+                        'id_user' => $user->id,
+                        'tgl' => now(),
+                        'batas_waktu' => now(),
+                        'tgl_bayar' => now(),
+                        'biaya_tambahan' => $request->biaya_tambahan,
+                        'diskon' => $request->diskon,
+                        // 'pajak' => $request->pajak,
+                        // 'status' => $request->status,
+                        'dibayar' => $request->dibayar,
+
+                    ];
+                } else if ($data = $request->dibayar == 'belum_bayar') {
+                    $data = [
+                        'id_outlet' => $value['id_outlet'],
+                        'id_member' => $request->id_member,
+                        'id_user' => $user->id,
+                        'tgl' => now(),
+                        'batas_waktu' => $request->batas_waktu,
+                        // 'tgl_bayar' => now(),
+                        'biaya_tambahan' => $request->biaya_tambahan,
+                        'diskon' => $request->diskon,
+                        // 'pajak' => $request->pajak,
+                        // 'status' => $request->status,
+                        'dibayar' => $request->dibayar,
+
+                    ];
+                }
+
+                // dd($data);
+
+                $transaksi = Transaksi::create($data);
+
+                $total = $number + $value['harga'] * $value['jumlah'] + ($request['biaya_tambahan'] - $request['diskon']);
+
+                // dd($total);
 
 
-            // dd($total);
-            $bayar = [
-                'keterangan' => $request->keterangan,
-                'id_paket' => $value['id'],
-                'id_transaksi' => $transaksi->id,
-                'qty' => $total,
-            ];
+                // dd($total);
+                $bayar = [
+                    'keterangan' => $request->keterangan,
+                    'id_paket' => $value['id'],
+                    'id_transaksi' => $transaksi->id,
+                    'qty' => $total,
+                ];
 
-            // dd($bayar);
+                // dd($bayar);
 
-            DetailTransaksi::create($bayar);
+                DetailTransaksi::create($bayar);
+            }
+
+            session()->forget('cart');
+            return back()->with('pesan', 'Transaksi Yang Anda Lakukan Berhasil');
         }
 
-        session()->forget('cart');
-        return back()->with('pesan', 'Transaksi Yang Anda Lakukan Berhasil');
+
+
+
+        if ($user->role == 'kasir') {
+            if ($data = $request->dibayar == 'bayar') {
+                $data = [
+                    'id_outlet' => $user->id_outlet,
+                    'id_member' => $request->id_member,
+                    'id_user' => $user->id,
+                    'tgl' => now(),
+                    'batas_waktu' => now(),
+                    'tgl_bayar' => now(),
+                    'biaya_tambahan' => $request->biaya_tambahan,
+                    'diskon' => $request->diskon,
+                    // 'pajak' => $request->pajak,
+                    // 'status' => $request->status,
+                    'dibayar' => $request->dibayar,
+
+                ];
+            } else if ($data = $request->dibayar == 'belum_bayar') {
+                $data = [
+                    'id_outlet' => $user->id_outlet,
+                    'id_member' => $request->id_member,
+                    'id_user' => $user->id,
+                    'tgl' => now(),
+                    'batas_waktu' => $request->batas_waktu,
+                    // 'tgl_bayar' => now(),
+                    'biaya_tambahan' => $request->biaya_tambahan,
+                    'diskon' => $request->diskon,
+                    // 'pajak' => $request->pajak,
+                    // 'status' => $request->status,
+                    'dibayar' => $request->dibayar,
+
+                ];
+            }
+
+            // dd($data);
+
+            $transaksi = Transaksi::create($data);
+
+            foreach (session('cart') as $key => $value) {
+                $total = $number + $value['harga'] * $value['jumlah'] + ($request['biaya_tambahan'] - $request['diskon']);
+
+                // dd($total);
+
+
+                // dd($total);
+                $bayar = [
+                    'keterangan' => $request->keterangan,
+                    'id_paket' => $value['id'],
+                    'id_transaksi' => $transaksi->id,
+                    'qty' => $total,
+                ];
+
+                // dd($bayar);
+
+                DetailTransaksi::create($bayar);
+            }
+
+            session()->forget('cart');
+            return back()->with('pesan', 'Transaksi Yang Anda Lakukan Berhasil');
+        }
     }
 
     /**
