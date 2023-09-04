@@ -18,8 +18,8 @@
             <span>Dashboard</span></a>
     </li>
     @if (Auth::user()->role == 'kasir')
-            <li class="nav-item active">
-        <a class="nav-link" href="{{ url('laundry/transaksikasir') }}">
+    <li class="nav-item active">
+        <a class="nav-link" href="{{ url('laundry/transaksi') }}">
             <i class="fas fa-money-check"></i>
             <span>Transaksi</span></a>
     </li>
@@ -30,7 +30,7 @@
     </li>
     @endif
     @if (Auth::user()->role == 'admin')
-            <li class="nav-item active">
+    <li class="nav-item active">
         <a class="nav-link" href="{{ url('laundry/transaksi') }}">
             <i class="fas fa-money-check"></i>
             <span>Transaksi</span></a>

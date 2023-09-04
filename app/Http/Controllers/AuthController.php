@@ -20,7 +20,6 @@ class AuthController extends Controller
     }
     public function postlogin(Request $request)
     {
-
         // dd($request->input());
         $request->validate([
             'email' => 'required|email',

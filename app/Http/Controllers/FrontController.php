@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Paket;
+use App\Models\Member;
 use App\Models\Outlet;
 use Illuminate\Http\Request;
 use App\Models\DetailTransaksi;
-use App\Models\Paket;
 use Illuminate\Support\Facades\Auth;
 
 class FrontController extends Controller
@@ -25,11 +26,15 @@ class FrontController extends Controller
     {
         $user = Auth::user();
 
+        // $toko = Outlet::all();
+
         // $harga = DetailTransaksi::all()->sum('qty');
 
         // $auth = User::all();
         if ($user->role == 'admin') {
             $users = User::count();
+            $member = Member::count();
+            $outlet = Outlet::count();
 
             $harga = DetailTransaksi::all()->sum('qty');
 
@@ -41,12 +46,12 @@ class FrontController extends Controller
                 // ->whereNull('detail_transaksis.deleted_at')
                 ->get();
 
-            return view('dasbord', compact('generates', 'users', 'harga'));
+            return view('dasbord', compact('generates', 'users', 'harga', 'member', 'outlet'));
         }
         if ($user->role == 'kasir') {
-            $users = User::count();
-
-            $harga = DetailTransaksi::all()->sum('qty');
+            $users = User::where('id_outlet', $user->id_outlet)->count();
+            $member = Member::count();
+            $outlet = Outlet::where('id', $user->id_outlet)->count();
 
             $generates = DetailTransaksi::join('transaksis', 'detail_transaksis.id_transaksi', '=', 'transaksis.id')
                 ->join('pakets', 'detail_transaksis.id_paket', '=', 'pakets.id')
@@ -57,10 +62,14 @@ class FrontController extends Controller
                 // ->whereNull('detail_transaksis.deleted_at')
                 ->get();
 
-            return view('dasbord', compact('generates', 'users', 'harga'));
+            $harga = $generates->sum('qty');
+
+            return view('dasbord', compact('generates', 'users', 'harga', 'member', 'outlet'));
         }
         if ($user->role == 'owner') {
-            $user = User::count();
+            $users = User::where('id_outlet', $user->id_outlet)->count();
+            $member = Member::count();
+            $outlet = Outlet::where('id', $user->id_outlet)->count();
 
             $generates = DetailTransaksi::join('transaksis', 'detail_transaksis.id_transaksi', '=', 'transaksis.id')
                 ->join('pakets', 'detail_transaksis.id_paket', '=', 'pakets.id')
@@ -71,7 +80,9 @@ class FrontController extends Controller
                 // ->whereNull('detail_transaksis.deleted_at')
                 ->get();
 
-            return view('dasbord', compact('generates', 'user'));
+            $harga = $generates->sum('qty');
+
+            return view('dasbord', compact('generates', 'users', 'harga', 'member', 'outlet'));
         }
     }
 

@@ -18,6 +18,69 @@ class TransaksiController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function belipaket(Request $request)
+    {
+        $id = $request->id_paket;
+
+        // dd($id);
+        $paket = Paket::where('id', $id)->first();
+
+        // dd($paket);
+
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$id])) {
+            $cart[$id]['jumlah']++;
+        } else {
+            $cart[$id] = [
+                'id' => $id,
+                'id_outlet' => $paket->id_outlet,
+                'jenis' => $paket->jenis,
+                'nama_paket' => $paket->nama_paket,
+                'harga' => $paket->harga,
+                'jumlah' => 1,
+            ];
+        }
+
+        session()->put('cart', $cart);
+        return back();
+    }
+
+    public function tambah($id)
+    {
+        $cart = session()->get('cart');
+        $cart[$id]['jumlah']++;
+        session()->put('cart', $cart);
+
+        return back();
+    }
+
+    public function kurang($id)
+    {
+        $cart = session()->get('cart');
+        if ($cart[$id]['jumlah'] > 1) {
+            $cart[$id]['jumlah']--;
+            session()->put('cart', $cart);
+        } else {
+            unset($cart['idd']);
+            session()->put('cart', $cart);
+        }
+        return back();
+    }
+
+    public function hapus($id)
+    {
+        $cart = session()->get('cart');
+        if (isset($cart[$id])) {
+            unset($cart[$id]);
+            session()->put('cart', $cart);
+        }
+
+        return back();
+    }
+
+
     public function index(Request $request)
     {
         $user = Auth::user();
@@ -53,7 +116,7 @@ class TransaksiController extends Controller
                 ->take(5)
                 ->get();
 
-            return view('Transaksi.transaksikasir', compact('pakets', 'members', 'transaksi'));
+            return view('Transaksi.transaksi', compact('pakets', 'members', 'transaksi'));
         }
     }
 
@@ -77,78 +140,68 @@ class TransaksiController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->role == 'admin') {
-            $pakets = Paket::where('id', $request->id_paket)->first();
-            // $pakets = Paket::where('id_outlet', $user->id_outlet)->find($request->id_paket);
+        $number = 0;
 
+        // $pakets = Paket::where('id', $request->id_paket)->first();
+        // $pakets = Paket::where('id_outlet', $user->id_outlet)->find($request->id_paket);
+
+        if ($data = $request->dibayar == 'bayar') {
             $data = [
                 'id_outlet' => $user->id_outlet,
                 'id_member' => $request->id_member,
                 'id_user' => $user->id,
                 'tgl' => now(),
                 'batas_waktu' => $request->batas_waktu,
-                'tgl_bayar' => $request->tgl_bayar,
+                'tgl_bayar' => now(),
                 'biaya_tambahan' => $request->biaya_tambahan,
                 'diskon' => $request->diskon,
-                'pajak' => $request->pajak,
+                // 'pajak' => $request->pajak,
                 // 'status' => $request->status,
                 'dibayar' => $request->dibayar,
+
             ];
-
-            // dd($pakets);
-
-            $total = $pakets->harga + ($request['biaya_tambahan'] + $request['pajak'] - $request['diskon']);
-
-            // dd($total);
-            $transaksi = Transaksi::create($data);
-
-
-            // dd($total);
-            DetailTransaksi::create([
-                'keterangan' => $request->keterangan,
-                'id_paket' => $request->id_paket,
-                'id_transaksi' => $transaksi->id,
-                'qty' => $total,
-            ]);
-
-            return back()->with('pesan', 'Transaksi Yang Anda Lakukan Berhasil');
-        }
-        if ($user->role == 'kasir') {
-            // $pakets = Paket::where('id', $request->id_paket)->first();
-            $pakets = Paket::where('id_outlet', $user->id_outlet)->find($request->id_paket);
-
+        } else if ($data = $request->dibayar == 'belum_bayar') {
             $data = [
                 'id_outlet' => $user->id_outlet,
                 'id_member' => $request->id_member,
                 'id_user' => $user->id,
                 'tgl' => now(),
                 'batas_waktu' => $request->batas_waktu,
-                'tgl_bayar' => $request->tgl_bayar,
+                // 'tgl_bayar' => now(),
                 'biaya_tambahan' => $request->biaya_tambahan,
                 'diskon' => $request->diskon,
-                'pajak' => $request->pajak,
+                // 'pajak' => $request->pajak,
                 // 'status' => $request->status,
                 'dibayar' => $request->dibayar,
+
             ];
+        }
 
-            // dd($pakets);
+        // dd($data);
 
-            $total = $pakets->harga + ($request['biaya_tambahan'] + $request['pajak'] - $request['diskon']);
+        $transaksi = Transaksi::create($data);
+
+        foreach (session('cart') as $key => $value) {
+            $total = $number + $value['harga'] * $value['jumlah'] + ($request['biaya_tambahan'] - $request['diskon']);
 
             // dd($total);
-            $transaksi = Transaksi::create($data);
 
 
             // dd($total);
-            DetailTransaksi::create([
+            $bayar = [
                 'keterangan' => $request->keterangan,
-                'id_paket' => $request->id_paket,
+                'id_paket' => $value['id'],
                 'id_transaksi' => $transaksi->id,
                 'qty' => $total,
-            ]);
+            ];
 
-            return back()->with('pesan', 'Transaksi Yang Anda Lakukan Berhasil');
+            // dd($bayar);
+
+            DetailTransaksi::create($bayar);
         }
+
+        session()->forget('cart');
+        return back()->with('pesan', 'Transaksi Yang Anda Lakukan Berhasil');
     }
 
     /**

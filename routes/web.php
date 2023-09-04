@@ -35,7 +35,12 @@ Route::group(['prefix' => 'laundry', 'middleware' => ['auth']], function () {
     //Admin
     Route::get('dasbord', [FrontController::class, 'dasbord']);
 
+    Route::resource('transaksi', TransaksiController::class);
     Route::resource('member', MemberController::class);
+    Route::get('belipaket', [TransaksiController::class, 'belipaket']);
+    Route::get('tambah/{id}', [TransaksiController::class, 'tambah']);
+    Route::get('kurang/{id}', [TransaksiController::class, 'kurang']);
+    Route::get('hapus/{id}', [TransaksiController::class, 'hapus']);
 
     Route::group(['middleware' => ['CekLogin:admin']], function () {
         // Register
@@ -65,7 +70,6 @@ Route::group(['prefix' => 'laundry', 'middleware' => ['auth']], function () {
         //Member
 
         // Transaksi
-        Route::resource('transaksi', TransaksiController::class);
 
         // Detail
         Route::resource('transaksidetail', DetailTransaksiController::class);
@@ -75,7 +79,7 @@ Route::group(['prefix' => 'laundry', 'middleware' => ['auth']], function () {
         Route::post('postregisterkasir', [AuthController::class, 'postregisteradmin']);
         Route::get('registerkasir', [FrontController::class, 'registerkasir']);
 
-        Route::resource('transaksikasir', TransaksiController::class);
+        // Route::resource('transaksikasir', TransaksiController::class);
 
         Route::resource('transaksidetailkasir', DetailTransaksiController::class);
     });
