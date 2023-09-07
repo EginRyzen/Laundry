@@ -4,11 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Paket;
 use App\Models\Member;
-use App\Models\Outlet;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use App\Models\DetailTransaksi;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class TransaksiController extends Controller
@@ -59,11 +57,11 @@ class TransaksiController extends Controller
     public function kurang($id)
     {
         $cart = session()->get('cart');
-        if ($cart[$id]['jumlah'] > 1) {
+        if ($cart[$id]['jumlah']) {
             $cart[$id]['jumlah']--;
             session()->put('cart', $cart);
         } else {
-            unset($cart['idd']);
+            unset($cart[$id]);
             session()->put('cart', $cart);
         }
         return back();
@@ -128,6 +126,7 @@ class TransaksiController extends Controller
         $user = Auth::user();
 
         $number = 0;
+        $pajak = 0.11;
 
         foreach (session('cart') as $key => $value) {
             if ($user->role == 'admin') {
@@ -164,20 +163,25 @@ class TransaksiController extends Controller
                 }
 
                 // dd($data);
+                $cart = $request->input('total');
+
+                // dd($jumlah);
 
                 $transaksi = Transaksi::create($data);
 
-                $total = $number + $value['harga'] * $value['jumlah'] + ($request['biaya_tambahan'] - $request['diskon']);
+                $total = $cart + ($request['biaya_tambahan'] - $request['diskon']);
+                $totalpajak = $total * $pajak;
+                $hasil = $totalpajak + $total;
+                $jumlah = round($hasil);
 
-                // dd($total);
-
+                // dd(($jumlah));
 
                 // dd($total);
                 $bayar = [
-                    'keterangan' => $request->keterangan,
+                    'keterangan' => $request->subtotal,
                     'id_paket' => $value['id'],
                     'id_transaksi' => $transaksi->id,
-                    'qty' => $total,
+                    'qty' => $jumlah,
                 ];
 
                 // dd($bayar);

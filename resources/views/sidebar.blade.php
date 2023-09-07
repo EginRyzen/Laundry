@@ -24,7 +24,7 @@
             <span>Transaksi</span></a>
     </li>
     <li class="nav-item active">
-        <a class="nav-link" href="{{ url('laundry/transaksidetailkasir') }}">
+        <a class="nav-link" href="{{ url('laundry/transaksidetail') }}">
             <i class="fas fa-fw fa-chart-area"></i>
             <span>Detail Transaksi</span></a>
     </li>

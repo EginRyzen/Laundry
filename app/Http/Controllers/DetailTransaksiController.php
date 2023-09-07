@@ -48,16 +48,6 @@ class DetailTransaksiController extends Controller
         }
     }
 
-    public function generate()
-    {
-        // $user = Auth::user();
-
-        $generates = DetailTransaksi::join('transaksis', 'detail_transaksis.id_transaksi', '=', 'transaksis.id')
-            ->join('pakets', 'detail_transaksis.id_peket', '=', 'pakets.id')
-            ->select(['detail_transaksis.*', 'transaksis.*', 'pakets.*'])
-            ->get();
-    }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -98,18 +88,9 @@ class DetailTransaksiController extends Controller
      */
     public function edit($id)
     {
-        $user = Auth::user();
+        $data = Transaksi::where('id', '=', $id)->first();
 
-        if ($user->role == 'admin') {
-            $data = Transaksi::where('id', '=', $id)->first();
-
-            return view('Deatail.update', compact('data'));
-        }
-        if ($user->role == 'kasir') {
-            $data = Transaksi::where('id', '=', $id)->first();
-
-            return view('Deatail.updatekasir', compact('data'));
-        }
+        return view('Deatail.update', compact('data'));
     }
 
     /**
@@ -122,26 +103,35 @@ class DetailTransaksiController extends Controller
     public function update(Request $request, $id)
     {
 
-        $user = Auth::user();
+        // $user = Auth::user();
 
-        if ($user->role == 'admin') {
+        // if ($user->role == 'admin') {
+        if ($request->dibayar == 'belum_bayar') {
+            Transaksi::where('id', $id)->update([
+                'tgl_bayar' => null,
+                'status' => $request->status,
+                'dibayar' => $request->dibayar,
+            ]);
+        }
+        if ($request->dibayar == 'bayar') {
             Transaksi::where('id', $id)->update([
                 'tgl_bayar' => now(),
                 'status' => $request->status,
                 'dibayar' => $request->dibayar,
             ]);
-
-            return redirect('laundry/transaksidetail')->with('pesan', 'Update Berhasil');
         }
-        if ($user->role == 'kasir') {
-            Transaksi::where('id', $id)->update([
-                'tgl_bayar' => now(),
-                'status' => $request->status,
-                'dibayar' => $request->dibayar,
-            ]);
 
-            return redirect('laundry/transaksidetailkasir')->with('pesan', 'Update Berhasil');
-        }
+        return redirect('laundry/transaksidetail')->with('pesan', 'Update Berhasil');
+        // }
+        // if ($user->role == 'kasir') {
+        //     Transaksi::where('id', $id)->update([
+        //         'tgl_bayar' => now(),
+        //         'status' => $request->status,
+        //         'dibayar' => $request->dibayar,
+        //     ]);
+
+        //     return redirect('laundry/transaksidetailkasir')->with('pesan', 'Update Berhasil');
+        // }
     }
 
     /**

@@ -35,11 +35,52 @@
                             <td>{{ $toko->alamat }}</td>
                             <td>{{ $toko->telp }}</td>
                             <td class="text-center">
-                                <a href="{{ url('laundry/edit/'.$toko->id) }}" class="mr-2 text-warning" ><i class="fas fa-edit"></i></a>
-                                <a href="" data-toggle="modal" data-target="#register" class="ml-2 text-danger"><i class="fas fa-trash"></i></a>
+                                <a href="" data-toggle="modal" data-target="#update{{ $toko->id }}"  class="mr-2 text-warning" ><i class="fas fa-edit"></i></a>
+                                <a href="" data-toggle="modal" data-target="#hapus{{ $toko->id }}" class="ml-2 text-danger"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
-                        <div class="modal fade" id="register" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+
+                        {{-- ModalUpadte --}}
+                        <div class="modal fade" id="update{{ $toko->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title text-danger" id="exampleModalLabel">Update Toko</h5>
+                                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <form action="{{ url('laundry/update/'.$toko->id) }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                                <div class="modal-body">
+                                                    {{-- <input type="text" value="{{ $toko->id }}" name="id_transaksi"> --}}
+                                                    <div class="form-group mb-3">
+                                                        <label for="" class="form-label">Nama</label>
+                                                        <input type="text" class="form-control form-control-user" id="exampleInputEmail" value="{{ $toko->nama }}" name="nama" 
+                                                    placeholder="Name OutLet">
+                                                </div>
+                                                <div class="form-group mb-3">
+                                                        <label for="" class="form-label">ALamat</label>
+                                                        <input type="text" class="form-control form-control-user" id="exampleInputEmail" value="{{ $toko->alamat }}" name="alamat" 
+                                                    placeholder="Name OutLet">
+                                                </div>
+                                                <div class="form-group mb-3">
+                                                        <label for="" class="form-label">Telpon</label>
+                                                        <input type="number" class="form-control form-control-user" id="exampleInputEmail" value="{{ $toko->telp }}" name="telp" 
+                                                    placeholder="Name OutLet">
+                                                </div>
+                                            <div class="modal-footer">
+                                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-primary">Yes</button>
+                                            </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Modal Delete --}}
+                        <div class="modal fade" id="hapus{{ $toko->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                                 aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">

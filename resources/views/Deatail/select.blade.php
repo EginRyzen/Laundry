@@ -5,8 +5,6 @@
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Detail Pembayaran</h1>
-    {{-- <button class="btn btn-primary my-3" data-toggle="modal" data-target="#row">Tambah Data</button> --}}
-    <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">DataTables Transaksi</h6>
@@ -22,10 +20,11 @@
                             <th>No</th>
                             <th>Toko</th>
                             <th>Member</th>
-                            <th>Batas Pembayaran</th>
+                            {{-- <th>BatasPembayaran</th> --}}
                             <th>Tanggal</th>
+                            <th>TglBayar</th>
                             <th>Status</th>
-                            <th>Pemabayaran</th>
+                            <th>Bayar</th>
                             <th>Update</th>
                         </tr>
                     </thead>
@@ -38,21 +37,16 @@
                             <td>{{ $no++ }}.</td>
                             <td>{{ $row->outlet_nama }}</td>
                             <td>{{ $row->nama }}</td>
-                            <td>{{ $row->batas_waktu }}</td>
+                            {{-- <td>{{ $row->batas_waktu }}</td> --}}
                             <td>{{ $row->tgl }}</td>
+                            <td>{{ $row->tgl_bayar }}</td>
                             <td>{{ $row->status }}</td>
                             <td>{{ $row->dibayar }}</td>
                             <td class="text-center">
-                                @if (Auth::user()->role == 'admin')
-                                    <a href="{{ url('laundry/transaksidetail/'.$row->id.'/edit') }}"  class="mr-2 text-warning" ><i class="fas fa-edit"></i></a>
-                                @endif
-                                @if (Auth::user()->role == 'kasir')
-                                    <a href="{{ url('laundry/transaksidetailkasir/'.$row->id.'/edit') }}"  class="mr-2 text-warning" ><i class="fas fa-edit"></i></a>
-                                @endif
-                                {{-- <a href="{{ url('laundry/row/'.$row->id) }}"  class="ml-2 text-danger"><i class="fas fa-trash"></i></a> --}}
+                                    <a data-toggle="modal" data-target="#update{{ $row->id }}" href="{{ url('laundry/transaksidetail/'.$row->id.'/edit') }}"  class="mr-2 text-warning" ><i class="fas fa-edit"></i></a>
                             </td>
                         </tr>
-                        <div class="modal fade" id="updatetransaksi" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                        <div class="modal fade" id="update{{ $row->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                                 aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
@@ -66,22 +60,21 @@
                                             @csrf
                                             @method('PUT')
                                             <div class="modal-body">
-                                                    <div class="form-group">
-                                                        <select name="status" class="form-control">
-                                                            <option value="{{ $row->status }}">{{ $row->status }}</option>
-                                                            <option value="baru">Baru</option>
-                                                            <option value="proses">Proses</option>
-                                                            <option value="selesai">Selesai</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <select name="dibayar" id="" class="form-control">
-                                                            <option value="{{ $row->dibayar }}" selected>{{ $row->dibayar }}</option>
-                                                            <option value="belum_bayar">Belum Bayar</option>
-                                                            <option value="bayar">Bayar</option>
-                                                        </select>
-                                                    </div>
+                                                {{-- <input type="text" value="{{ $row->id }}" name="id_transaksi"> --}}
+                                                <div class="form-group">
+                                                    <select name="status" class="form-control">
+                                                        <option value="baru" {{ $row->status == 'baru' ? 'selected' : '' }}>Baru</option>
+                                                        <option value="proses" {{ $row->status == 'proses' ? 'selected' : '' }}>Proses</option>
+                                                        <option value="selesai" {{ $row->status == 'selesai' ? 'selected' : '' }}>Selesai</option>
+                                                    </select>
                                                 </div>
+                                                <div class="form-group">
+                                                    <select name="dibayar" class="form-control">
+                                                        <option value="belum_bayar" {{ $row->dibayar == 'belum_bayar' ? 'selected' : '' }}>Belum Bayar</option>
+                                                        <option value="bayar" {{ $row->dibayar == 'bayar' ? 'selected' : '' }}>Bayar</option>
+                                                    </select>
+                                                </div>
+
                                                 <div class="modal-footer">
                                                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                                                     <button type="submit" class="btn btn-primary">Yes</button>

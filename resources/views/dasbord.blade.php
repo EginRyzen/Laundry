@@ -103,9 +103,10 @@
     <h3>Generate Laporan</h3>
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
+        <div class="card-header py-3 d-flex justify-content-between">
             <h6 class="m-0 font-weight-bold text-primary">Transaksi</h6>
-        </div>
+            <a href="" class="m-0 font-weight-bold text-primary">Print Generate <i class="fa fa-print fa-lg"></i></a>
+        </div>        
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">

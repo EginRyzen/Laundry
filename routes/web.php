@@ -34,6 +34,7 @@ Route::group(['prefix' => 'laundry', 'middleware' => ['auth']], function () {
 
     //Admin
     Route::get('dasbord', [FrontController::class, 'dasbord']);
+    Route::resource('transaksidetail', DetailTransaksiController::class);
 
     Route::resource('transaksi', TransaksiController::class);
     Route::resource('member', MemberController::class);
@@ -72,7 +73,6 @@ Route::group(['prefix' => 'laundry', 'middleware' => ['auth']], function () {
         // Transaksi
 
         // Detail
-        Route::resource('transaksidetail', DetailTransaksiController::class);
     });
 
     Route::group(['middleware' => ['CekLogin:kasir']], function () {
@@ -81,7 +81,7 @@ Route::group(['prefix' => 'laundry', 'middleware' => ['auth']], function () {
 
         // Route::resource('transaksikasir', TransaksiController::class);
 
-        Route::resource('transaksidetailkasir', DetailTransaksiController::class);
+        // Route::resource('transaksidetailkasir', DetailTransaksiController::class);
     });
 
     //Kasir

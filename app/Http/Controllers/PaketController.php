@@ -16,12 +16,13 @@ class PaketController extends Controller
      */
     public function index()
     {
+
         $pakets = Paket::join('outlets', 'pakets.id_outlet', '=', 'outlets.id')
             ->select(['outlets.*', 'pakets.*'])->get();
 
-        $outlets = Outlet::all();
+        $tokos = Outlet::all();
 
-        return view('Paket.select', compact('pakets', 'outlets'));
+        return view('Paket.select', compact('pakets', 'tokos'));
     }
 
     /**
