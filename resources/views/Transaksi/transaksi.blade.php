@@ -10,17 +10,19 @@
                         <span class="ml-3">Add Paket</span>
                     </div>
                     <div class="col-md-7">
-                        <select name="id_paket" id="" class="form-control form-select" onchange="this.form.submit()">
+                        <select name="id_paket" id="" class="form-control form-select"
+                            onchange="this.form.submit()">
                             <option value="" disabled selected>---- Pilih Paket ---</option>
-                            @foreach($pakets as $paket)
-                            <option value="{{ $paket->id}}">{{ $paket->nama_paket }}</option>
+                            @foreach ($pakets as $paket)
+                                <option value="{{ $paket->id }}">{{ $paket->nama_paket }}</option>
                             @endforeach
-                        </select>                    
+                        </select>
                     </div>
                     <div class="col-md-5">
                         @if (session('pesan'))
-                    <p class="alert alert-success my-3"><i class="fas fa-check-circle"></i>  {{ session('pesan') }}</p>
-                    @endif
+                            <p class="alert alert-success my-3"><i class="fas fa-check-circle"></i> {{ session('pesan') }}
+                            </p>
+                        @endif
                     </div>
                 </div>
             </form>
@@ -37,36 +39,39 @@
                         </thead>
                         <tbody>
                             @php
-                                $no=1;
+                                $no = 1;
                                 $total = 0;
                             @endphp
-                                @if (session()->has('cart'))
+                            @if (session()->has('cart'))
                                 @foreach (session('cart') as $id => $menu)
-                                @php
-                                    $total = $total + $menu['jumlah']*$menu['harga'];
-                                @endphp
-                                <tr>
-                                    <td>{{ $no++ }}.</td>
-                                    <td>{{ $menu['nama_paket'] }}</td>
-                                    <td class="text-lg"> <a href="{{ url('laundry/kurang/'.$menu['id']) }}" class="text-decoration-none text-warning font-weight-bold text-lg">[-] </a>
-                                        {{ $menu['jumlah'] }} 
-                                        <a href="{{ url('laundry/tambah/'.$menu['id']) }}" class="text-decoration-none text-success font-weight-bold text-lg">[+]</a></td>
-                                    <td>{{ $menu['harga'] }}</td>
-                                    <td>
-                                        {{ $menu['jumlah']*$menu['harga'] }}
-                                    </td>
-                                    <td>
-                                        <a href="{{ url('laundry/hapus/'.$menu['id']) }}" class="text-danger font-weight-bold"><i class="fa fa-trash"></i> Hapus</a>
-                                    </td>
-                                </tr>
+                                    @php
+                                        $total = $total + $menu['jumlah'] * $menu['harga'];
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $no++ }}.</td>
+                                        <td>{{ $menu['nama_paket'] }}</td>
+                                        <td class="text-lg"> <a href="{{ url('laundry/kurang/' . $menu['id']) }}"
+                                                class="text-decoration-none text-warning font-weight-bold text-lg">[-] </a>
+                                            {{ $menu['jumlah'] }}
+                                            <a href="{{ url('laundry/tambah/' . $menu['id']) }}"
+                                                class="text-decoration-none text-success font-weight-bold text-lg">[+]</a>
+                                        </td>
+                                        <td>{{ $menu['harga'] }}</td>
+                                        <td>
+                                            {{ $menu['jumlah'] * $menu['harga'] }}
+                                        </td>
+                                        <td>
+                                            <a href="{{ url('laundry/hapus/' . $menu['id']) }}"
+                                                class="text-danger font-weight-bold"><i class="fa fa-trash"></i> Hapus</a>
+                                        </td>
+                                    </tr>
                                 @endforeach
                                 <tr>
                                     <td colspan="4" class="text-center font-weight-bold">Jumlah :</td>
                                     <td colspan="2">{{ $total }}</td>
                                 </tr>
-                                @else
-                                    
-                                @endif
+                            @else
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -89,8 +94,8 @@
                     </div>
                     <div class="col-md-4 mb-3">
                         <select name="id_member" id="" class="form-control form-select">
-                            @foreach ( $members as $member )
-                            <option value="{{ $member->id }}">{{ $member->nama }}</option>
+                            @foreach ($members as $member)
+                                <option value="{{ $member->id }}">{{ $member->nama }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -133,7 +138,7 @@
                     </div>
                     <div class="col-md-5 mb-3">
                         <div class="mt-1">
-                            <button class="float-right btn btn-success"  type="submit">Transaksi</button>
+                            <button class="float-right btn btn-success" type="submit">Transaksi</button>
                         </div>
                     </div>
                 </div>
@@ -141,24 +146,23 @@
         </div>
     </div>
     <script>
-        function pesan(){
-                var total = parseFloat(document.getElementById('total').value);
-                var tambahan = parseFloat(document.getElementById('tambahan').value) || 0;
-                var discount = parseFloat(document.getElementById('discount').value) || 0; 
-                var pajak = 0.11; // 11%
+        function pesan() {
+            var total = parseFloat(document.getElementById('total').value);
+            var tambahan = parseFloat(document.getElementById('tambahan').value) || 0;
+            var discount = parseFloat(document.getElementById('discount').value) || 0;
+            var pajak = 0.11; // 11%
 
-                var totalBiaya = total + tambahan - discount;
-                var totalPajak = totalBiaya * pajak;
-                var jumlah = totalBiaya + totalPajak;
+            var totalBiaya = total + tambahan - discount;
+            var totalPajak = totalBiaya * pajak;
+            var jumlah = totalBiaya + totalPajak;
 
-                if (isNaN(jumlah)) {
-                    jumlah = 0; 
-                }
-                var totalSpan = document.getElementById('totalSpan');
+            if (isNaN(jumlah)) {
+                jumlah = 0;
+            }
+            var totalSpan = document.getElementById('totalSpan');
 
-                // Mengubah isi dari elemen <span>
-                totalSpan.textContent = 'Rp. ' + Math.ceil(jumlah);
+            // Mengubah isi dari elemen <span>
+            totalSpan.textContent = 'Rp. ' + Math.ceil(jumlah);
         }
-
     </script>
 @endsection

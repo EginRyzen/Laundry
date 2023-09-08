@@ -33,6 +33,9 @@ Route::get('logout', [FrontController::class, 'logout']);
 Route::group(['prefix' => 'laundry', 'middleware' => ['auth']], function () {
 
     //Admin
+    Route::get('generatepdf', [FrontController::class, 'generatepdf']);
+    Route::get('downloadpdf', [FrontController::class, 'downloadpdf']);
+
     Route::get('dasbord', [FrontController::class, 'dasbord']);
     Route::resource('transaksidetail', DetailTransaksiController::class);
 
