@@ -55,7 +55,10 @@ class MemberController extends Controller
      */
     public function show($id)
     {
-        //
+        $data = Member::where('id', '=', $id)->first();
+        $data->delete();
+
+        return back();
     }
 
     /**
@@ -104,9 +107,6 @@ class MemberController extends Controller
      */
     public function destroy($id)
     {
-        $data = Member::where('id', '=', $id)->first();
-        $data->delete();
-
-        return back();
+        //
     }
 }

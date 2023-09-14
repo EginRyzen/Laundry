@@ -29,16 +29,8 @@ class AuthController extends Controller
         $data = $request->only('email', 'password');
         // dd($data);
         if (Auth::attempt($data)) {
-            $user = Auth::user();
-            if ($user->role == 'admin') {
-                return redirect('laundry/dasbord');
-            }
-            if ($user->role == 'kasir') {
-                return redirect('laundry/dasbord');
-            }
-            if ($user->role == 'owner') {
-                return redirect('laundry/dasbord');
-            }
+            // $user = Auth::user();
+            return redirect('laundry/dasbord');
         }
 
         return back()->with('pesan', 'Password Atau Email Anda Salah');

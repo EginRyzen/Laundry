@@ -8,6 +8,7 @@ use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use App\Models\DetailTransaksi;
 use Illuminate\Support\Facades\Auth;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class DetailTransaksiController extends Controller
 {
@@ -18,6 +19,10 @@ class DetailTransaksiController extends Controller
      */
     public function index()
     {
+        // if (!Auth::check()) {
+        //     redirect('/');
+        // }
+
         $user = Auth::user();
 
         // $tokoh = Outlet::where('id', $user->id_outlet);
@@ -35,7 +40,6 @@ class DetailTransaksiController extends Controller
 
             return view('Deatail.select', compact('transaksi'));
         }
-
         if ($user->role == 'kasir') {
 
             $transaksi = Transaksi::join('members', 'transaksis.id_member', '=', 'members.id')
@@ -103,9 +107,6 @@ class DetailTransaksiController extends Controller
     public function update(Request $request, $id)
     {
 
-        // $user = Auth::user();
-
-        // if ($user->role == 'admin') {
         if ($request->dibayar == 'belum_bayar') {
             Transaksi::where('id', $id)->update([
                 'tgl_bayar' => null,
@@ -120,18 +121,11 @@ class DetailTransaksiController extends Controller
                 'dibayar' => $request->dibayar,
             ]);
         }
+        Alert::info('Warning Title', 'Warning Message');
 
-        return redirect('laundry/transaksidetail')->with('pesan', 'Update Berhasil');
-        // }
-        // if ($user->role == 'kasir') {
-        //     Transaksi::where('id', $id)->update([
-        //         'tgl_bayar' => now(),
-        //         'status' => $request->status,
-        //         'dibayar' => $request->dibayar,
-        //     ]);
 
-        //     return redirect('laundry/transaksidetailkasir')->with('pesan', 'Update Berhasil');
-        // }
+        alert()->info('Trasnsaksi', 'Berhasil Untuk Di Update');
+        return redirect('laundry/transaksidetail');
     }
 
     /**

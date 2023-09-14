@@ -46,6 +46,10 @@ Route::group(['prefix' => 'laundry', 'middleware' => ['auth']], function () {
     Route::get('kurang/{id}', [TransaksiController::class, 'kurang']);
     Route::get('hapus/{id}', [TransaksiController::class, 'hapus']);
 
+    // if (Auth::user()) {
+    //     # code...
+    // }
+
     Route::group(['middleware' => ['CekLogin:admin']], function () {
         // Register
         Route::get('registeradmin', [FrontController::class, 'registeradmin']);

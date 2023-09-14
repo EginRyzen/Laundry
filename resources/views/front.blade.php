@@ -45,7 +45,7 @@
 
                 <!-- Begin Page Content -->
 
-                    @yield('content')
+                @yield('content')
 
                 <!-- /.container-fluid -->
 
@@ -92,6 +92,8 @@
             </div>
         </div>
     </div>
+    @include('sweetalert::alert')
+
 
     <!-- Bootstrap core JavaScript-->
     <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>

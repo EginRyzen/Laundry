@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Outlet;
 use Illuminate\Http\Request;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class OutletController extends Controller
 {
@@ -43,6 +44,9 @@ class OutletController extends Controller
             'telp' => $request->telp,
         ]);
 
+        Alert::success('Success Title', 'Success Message');
+
+        alert()->success('OutLet', 'Berhasil Untuk Di DiTambahkan');
         return back();
     }
 
@@ -60,6 +64,7 @@ class OutletController extends Controller
     {
         $data = Outlet::where('id', '=', $id);
         $data->delete();
+
         return back();
     }
 
@@ -91,6 +96,9 @@ class OutletController extends Controller
             'telp' => $request->telp,
         ]);
 
+        Alert::info('Warning Title', 'Warning Message');
+
+        alert()->info('Outlet', 'Berhasil Untuk Di Update');
         return redirect('laundry/selectoutlet');
     }
 

@@ -18,28 +18,28 @@
             <span>Dashboard</span></a>
     </li>
     @if (Auth::user()->role == 'kasir')
-    <li class="nav-item active">
-        <a class="nav-link" href="{{ url('laundry/transaksi') }}">
-            <i class="fas fa-money-check"></i>
-            <span>Transaksi</span></a>
-    </li>
-    <li class="nav-item active">
-        <a class="nav-link" href="{{ url('laundry/transaksidetail') }}">
-            <i class="fas fa-fw fa-chart-area"></i>
-            <span>Detail Transaksi</span></a>
-    </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="{{ url('laundry/transaksi') }}">
+                <i class="fas fa-money-check"></i>
+                <span>Transaksi</span></a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="{{ url('laundry/transaksidetail') }}">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>Detail Transaksi</span></a>
+        </li>
     @endif
     @if (Auth::user()->role == 'admin')
-    <li class="nav-item active">
-        <a class="nav-link" href="{{ url('laundry/transaksi') }}">
-            <i class="fas fa-money-check"></i>
-            <span>Transaksi</span></a>
-    </li>
-    <li class="nav-item active">
-        <a class="nav-link" href="{{ url('laundry/transaksidetail') }}">
-            <i class="fas fa-fw fa-chart-area"></i>
-            <span>Detail Transaksi</span></a>
-    </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="{{ url('laundry/transaksi') }}">
+                <i class="fas fa-money-check"></i>
+                <span>Transaksi</span></a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="{{ url('laundry/transaksidetail') }}">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>Detail Transaksi</span></a>
+        </li>
     @endif
 
     <!-- Divider -->
@@ -70,43 +70,43 @@
         </div>
     </li> --}}
     @if (Auth::user()->role == 'admin')
-    <li class="nav-item">
-        <a class="nav-link" href="{{ url('laundry/registeradmin') }}">
-            <i class="fas fa-user-plus"></i>
-            <span>Register Pelanggan</span></a>
-    </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="{{ url('laundry/registeradmin') }}">
+                <i class="fas fa-user-plus"></i>
+                <span>Register Pelanggan</span></a>
+        </li>
     @endif
     @if (Auth::user()->role == 'kasir')
-    <li class="nav-item">
-        <a class="nav-link" href="{{ url('laundry/member') }}">
-            <i class="fas fa-users"></i>
-            <span>Member/Pelanggan</span></a>
-    </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="{{ url('laundry/member') }}">
+                <i class="fas fa-users"></i>
+                <span>Member/Pelanggan</span></a>
+        </li>
     @endif
     @if (Auth::user()->role == 'admin')
-    <li class="nav-item">
-        <a class="nav-link" href="{{ url('laundry/selectoutlet') }}">
-            <i class="fas fa-home"></i>
-            <span>Outlet</span></a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="{{ url('laundry/selectpaket') }}">
-            <i class="fas fa-luggage-cart"></i>
-            <span>Paket</span></a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="{{ url('laundry/selectpelanggan') }}">
-            <i class="fas fa-user-tie"></i>
-            <span>All User</span></a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="{{ url('laundry/member') }}">
-            <i class="fas fa-users"></i>
-            <span>Member/Pelanggan</span></a>
-    </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="{{ url('laundry/selectoutlet') }}">
+                <i class="fas fa-home"></i>
+                <span>Outlet</span></a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="{{ url('laundry/selectpaket') }}">
+                <i class="fas fa-luggage-cart"></i>
+                <span>Paket</span></a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="{{ url('laundry/selectpelanggan') }}">
+                <i class="fas fa-user-tie"></i>
+                <span>All User</span></a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="{{ url('laundry/member') }}">
+                <i class="fas fa-users"></i>
+                <span>Member/Pelanggan</span></a>
+        </li>
     @endif
 
-{{-- 
+    {{-- 
     <!-- Nav Item - Utilities Collapse Menu -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"

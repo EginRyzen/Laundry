@@ -6,9 +6,10 @@ use App\Models\User;
 use App\Models\Paket;
 use App\Models\Member;
 use App\Models\Outlet;
-use Barryvdh\DomPDF\PDF;
+// use Barryvdh\DomPDF\PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\DetailTransaksi;
-use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+// use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Illuminate\Support\Facades\Auth;
 // use PDF;
 
@@ -16,6 +17,10 @@ class FrontController extends Controller
 {
     public function login()
     {
+        if (Auth::user()) {
+            return redirect('laundry/dasbord')->with('pesan', 'Anda Masih Login,Silahkan LogOut Terlebih Dahulu!!!!');
+        }
+
         return view('Login.login');
     }
 
@@ -113,31 +118,61 @@ class FrontController extends Controller
 
     public function generatepdf()
     {
-        $generates = DetailTransaksi::join('transaksis', 'detail_transaksis.id_transaksi', '=', 'transaksis.id')
-            ->join('pakets', 'detail_transaksis.id_paket', '=', 'pakets.id')
-            ->join('outlets', 'pakets.id_outlet', '=', 'outlets.id')
-            ->join('members', 'transaksis.id_member', '=', 'members.id')
-            ->select('detail_transaksis.*', 'transaksis.*', 'pakets.*', 'outlets.*', 'members.nama as member')
-            // ->whereNull('detail_transaksis.deleted_at')
-            ->get();
-        return view('printpdf', compact('generates'));
+        $user = Auth::user();
+
+        if ($user->role == 'admin') {
+            $generates = DetailTransaksi::join('transaksis', 'detail_transaksis.id_transaksi', '=', 'transaksis.id')
+                ->join('pakets', 'detail_transaksis.id_paket', '=', 'pakets.id')
+                ->join('outlets', 'pakets.id_outlet', '=', 'outlets.id')
+                ->join('members', 'transaksis.id_member', '=', 'members.id')
+                ->select('detail_transaksis.*', 'transaksis.*', 'pakets.*', 'outlets.*', 'members.nama as member')
+                // ->whereNull('detail_transaksis.deleted_at')
+                ->get();
+            return view('printpdf', compact('generates'));
+        }
+        if ($user->role == 'kasir') {
+            $generates = DetailTransaksi::join('transaksis', 'detail_transaksis.id_transaksi', '=', 'transaksis.id')
+                ->join('pakets', 'detail_transaksis.id_paket', '=', 'pakets.id')
+                ->join('outlets', 'pakets.id_outlet', '=', 'outlets.id')
+                ->join('members', 'transaksis.id_member', '=', 'members.id')
+                ->where('transaksis.id_outlet', $user->id_outlet)
+                ->select('detail_transaksis.*', 'transaksis.*', 'pakets.*', 'outlets.*', 'members.nama as member')
+                // ->whereNull('detail_transaksis.deleted_at')
+                ->get();
+            return view('printpdf', compact('generates'));
+        }
     }
 
     public function downloadpdf()
     {
-        $generates = DetailTransaksi::join('transaksis', 'detail_transaksis.id_transaksi', '=', 'transaksis.id')
-            ->join('pakets', 'detail_transaksis.id_paket', '=', 'pakets.id')
-            ->join('outlets', 'pakets.id_outlet', '=', 'outlets.id')
-            ->join('members', 'transaksis.id_member', '=', 'members.id')
-            ->select('detail_transaksis.*', 'transaksis.*', 'pakets.*', 'outlets.*', 'members.nama as member')
-            // ->whereNull('detail_transaksis.deleted_at')
-            ->get();
+        $user = Auth::user();
 
-        // $pdf = app('dompdf');
-        // $pdf = app('dompdf.wrapper')->loadView('printpdf', compact('generates'));
-        $pdf = FacadePdf::loadView('printpdf', compact('generates'))->setOption(['defaultFont' => 'sans-serif']);;
+        if ($user->role == 'admin') {
+            $generates = DetailTransaksi::join('transaksis', 'detail_transaksis.id_transaksi', '=', 'transaksis.id')
+                ->join('pakets', 'detail_transaksis.id_paket', '=', 'pakets.id')
+                ->join('outlets', 'pakets.id_outlet', '=', 'outlets.id')
+                ->join('members', 'transaksis.id_member', '=', 'members.id')
+                ->select('detail_transaksis.*', 'transaksis.*', 'pakets.*', 'outlets.*', 'members.nama as member')
+                // ->whereNull('detail_transaksis.deleted_at')
+                ->get();
 
+            $pdf = Pdf::loadView('printpdf', compact('generates'));
 
-        return $pdf->download('laporan.pdf');
+            return $pdf->download('laporan.pdf');
+        }
+        if ($user->role == 'kasir') {
+            $generates = DetailTransaksi::join('transaksis', 'detail_transaksis.id_transaksi', '=', 'transaksis.id')
+                ->join('pakets', 'detail_transaksis.id_paket', '=', 'pakets.id')
+                ->join('outlets', 'pakets.id_outlet', '=', 'outlets.id')
+                ->join('members', 'transaksis.id_member', '=', 'members.id')
+                ->where('transaksis.id_outlet', $user->id_outlet)
+                ->select('detail_transaksis.*', 'transaksis.*', 'pakets.*', 'outlets.*', 'members.nama as member')
+                // ->whereNull('detail_transaksis.deleted_at')
+                ->get();
+
+            $pdf = Pdf::loadView('printpdf', compact('generates'));
+
+            return $pdf->download('laporan.pdf');
+        }
     }
 }

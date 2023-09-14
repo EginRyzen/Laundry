@@ -19,7 +19,7 @@ class CekLogin
     {
 
         if (!Auth::check()) {
-            redirect('/');
+            return redirect('/');
         }
 
         $user = Auth::user();
