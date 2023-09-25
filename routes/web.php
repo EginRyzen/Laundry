@@ -45,6 +45,7 @@ Route::group(['prefix' => 'laundry', 'middleware' => ['auth']], function () {
     Route::get('tambah/{id}', [TransaksiController::class, 'tambah']);
     Route::get('kurang/{id}', [TransaksiController::class, 'kurang']);
     Route::get('hapus/{id}', [TransaksiController::class, 'hapus']);
+    Route::get('struk', [TransaksiController::class, 'struk']);
 
     // if (Auth::user()) {
     //     # code...

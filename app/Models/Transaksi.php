@@ -15,6 +15,7 @@ class Transaksi extends Model
         'id_outlet',
         'id_member',
         'id_user',
+        'kode_invoice',
         'tgl',
         'batas_waktu',
         'tgl_bayar',

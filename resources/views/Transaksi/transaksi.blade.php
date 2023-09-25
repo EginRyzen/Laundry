@@ -9,14 +9,19 @@
                     <div class="col-md-2 mt-2">
                         <span class="ml-3">Add Paket</span>
                     </div>
-                    <div class="col-md-7">
-                        <select name="id_paket" id="" class="form-control form-select"
-                            onchange="this.form.submit()">
+                    <div class="col-md-4">
+                        <select name="id_paket" id="" class="form-control form-select">
                             <option value="" disabled selected>---- Pilih Paket ---</option>
                             @foreach ($pakets as $paket)
                                 <option value="{{ $paket->id }}">{{ $paket->nama_paket }}</option>
                             @endforeach
                         </select>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="number" name="jumlah" placeholder="--- Jumlah Paket ----" class="form-control">
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-primary" type="submit">Submit</button>
                     </div>
                     <div class="col-md-5">
                         @if (session('pesan'))
@@ -78,17 +83,16 @@
             </div>
             <form action="{{ url('laundry/transaksi') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <input type="hidden" name="total" value="{{ $total }}">
+                <input type="hidden" class="form-control" name="total" id="totals" value="{{ $total }}"
+                    onkeyup="pesan();">
                 <div class="row px-3">
-                    <div class="col-md-2 mt-1">
+
+                    {{-- <div class="col-md-2 mt-1">
                         <label for="">DiBayar : </label>
                     </div>
                     <div class="col-md-4 mb-3">
-                        <select name="dibayar" id="" class="form-control form-select">
-                            <option value="belum_bayar" selected>Belum Di Bayar</option>
-                            <option value="bayar">DiBayar</option>
-                        </select>
-                    </div>
+                        <input type="text" name="dibayar" class="form-control">
+                    </div> --}}
                     <div class="col-md-2 mt-1">
                         <label for="">Member : </label>
                     </div>
@@ -99,9 +103,6 @@
                             @endforeach
                         </select>
                     </div>
-                </div>
-                <div class="row px-3">
-                    <input type="hidden" value="{{ $total }}" id="total">
                     <div class="col-md-2 mt-1">
                         <label for="">Biaya Tambahan : </label>
                     </div>
@@ -114,31 +115,35 @@
                     <div class="col-md-4 mb-3">
                         <input class="form-control" type="number" name="diskon" id="discount" onkeyup="pesan();">
                     </div>
-                </div>
-                <div class="row px-3">
                     <div class="col-md-2 mt-1">
-                        <label for="">BatasWaktu : </label>
+                        <label for="">Pembayaran : </label>
                     </div>
                     <div class="col-md-4 mb-3">
-                        <input class="form-control" type="date" name="batas_waktu" id="">
+                        <input type="number" name="dibayar" id="dibayar" class="form-control" onkeyup="pesan();">
                     </div>
                     <div class="col-md-2 mt-1">
-                        <label for="" class="form-label">Keterangan</label>
+                        <label for="" class="form-label">Keterangan : </label>
                     </div>
                     <div class="col-md-4 mb-3">
                         <textarea class="form-control form-control-user" name="keterangan" aria-label="With textarea"></textarea>
                     </div>
                 </div>
+                {{-- <p class=" px-3">Total Harga Belum Termasuk Pajak : {{ $total }}</p> --}}
                 <div class="row px-3">
+
+                    {{-- Total Harga --}}
+                    {{-- <input type="text" name="totalharga" id="totalinput"> --}}
                     <div class="col-md-2">
                         <span for="">Jumlah Keseluruhan : </span>
+                        <span for="">Kembalian : </span>
                     </div>
                     <div class="col-md-4 mb-3">
-                        <span type="text" disabled name="jumlah" value="" id="totalSpan"></span>
+                        <span type="text" disabled name="jumlah" value="" id="totalSpan"></span><br>
+                        <span type="text" name="" value="" id="kembali"></span>
                     </div>
-                    <div class="col-md-5 mb-3">
+                    <div class="col-md-6 mb-3">
                         <div class="mt-1">
-                            <button class="float-right btn btn-success" type="submit">Transaksi</button>
+                            <button class="float-right btn btn-success" target="_blank" type="submit">Transaksi</button>
                         </div>
                     </div>
                 </div>
@@ -147,22 +152,29 @@
     </div>
     <script>
         function pesan() {
-            var total = parseFloat(document.getElementById('total').value);
+            var total = parseFloat(document.getElementById('totals').value);
             var tambahan = parseFloat(document.getElementById('tambahan').value) || 0;
             var discount = parseFloat(document.getElementById('discount').value) || 0;
+            var dibayar = parseFloat(document.getElementById('dibayar').value) || 0;
             var pajak = 0.11; // 11%
 
             var totalBiaya = total + tambahan - discount;
             var totalPajak = totalBiaya * pajak;
             var jumlah = totalBiaya + totalPajak;
 
-            if (isNaN(jumlah)) {
-                jumlah = 0;
+            if (dibayar > 0) {
+                var kembalian = dibayar - jumlah;
             }
-            var totalSpan = document.getElementById('totalSpan');
 
-            // Mengubah isi dari elemen <span>
-            totalSpan.textContent = 'Rp. ' + Math.ceil(jumlah);
+            var totalSpan = document.getElementById('totalSpan');
+            var kembali = document.getElementById('kembali');
+
+            if (isNaN(kembalian)) {
+                kembalian = 0;
+            }
+
+            kembali.innerHTML = 'Rp. ' + Math.ceil(kembalian);
+            totalSpan.innerHTML = 'Rp. ' + Math.ceil(jumlah);
         }
     </script>
 @endsection
