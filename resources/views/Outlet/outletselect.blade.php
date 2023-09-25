@@ -110,8 +110,7 @@
                                     name="nama" required placeholder="Name OutLet">
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control form-control-user" id="exampleInputEmail"
-                                    name="alamat" required placeholder="Address">
+                                <textarea class="form-control form-control-user" name="alamat" placeholder="Alamat"></textarea>
                             </div>
                             <div class="form-group">
                                 <input type="number" class="form-control form-control-user" id="exampleInputEmail"

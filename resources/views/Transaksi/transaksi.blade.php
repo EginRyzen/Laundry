@@ -143,7 +143,7 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <div class="mt-1">
-                            <button class="float-right btn btn-success" target="_blank" type="submit">Transaksi</button>
+                            <button class="float-right btn btn-success" id="btn" type="submit">Transaksi</button>
                         </div>
                     </div>
                 </div>
@@ -176,5 +176,15 @@
             kembali.innerHTML = 'Rp. ' + Math.ceil(kembalian);
             totalSpan.innerHTML = 'Rp. ' + Math.ceil(jumlah);
         }
+
+        var btn = document.getElementById('btn');
+
+        btn.addEventListener('click', function() {
+            var url = "{{ url('laundry/struk') }}";
+
+            // Membuka URL dalam tab baru
+            window.open(url, '_blank');
+            // window.history.back();
+        });
     </script>
 @endsection

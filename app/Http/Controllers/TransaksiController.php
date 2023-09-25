@@ -123,6 +123,7 @@ class TransaksiController extends Controller
      */
     public function store(Request $request)
     {
+        // return "ya";
         $user = Auth::user();
 
         $today = Carbon::now();
@@ -172,17 +173,8 @@ class TransaksiController extends Controller
 
         $transaksis = Transaksi::create($data);
 
-        $number = 0;
-
+        // $number = 0;
         foreach (session('cart') as $value) {
-            // $harga = $value['harga'];
-            // $jumlah = $value['jumlah'];
-            // $subtotal = ($harga * $jumlah) + $request->biaya_tambahan - $request->diskon; // Calculate subtotal for the value
-            // $number += $subtotal * $pajak;
-            // $total = $number + $subtotal;
-            // $hasil = round($total);
-
-            // dd($hasil);
             $bayar = [
                 'keterangan' => $request->keterangan,
                 'id_paket' => $value['id'],
@@ -194,19 +186,8 @@ class TransaksiController extends Controller
         }
 
         session()->forget('cart');
-
-        $member = Member::where('id', $request->id_member)->first();
-        $alamat = Outlet::where('id', $transaksis->id_outlet)->first();
-        $transaksi = Transaksi::where('id', $transaksis->id)->first();
-        $struks = DetailTransaksi::join('transaksis', 'detail_transaksis.id_transaksi', '=', 'transaksis.id')
-            ->join('pakets', 'detail_transaksis.id_paket', '=', 'pakets.id')
-            ->where('transaksis.id', $transaksis->id)
-            ->select(['detail_transaksis.*', 'pakets.*', 'transaksis.*'])
-            ->get();
-
-        // dd($struk);
-
-        return view('struk', compact('member', 'struks', 'alamat', 'transaksi'));
+        // echo '<script>window.open("' . route('struk') . '", "_blank");</script>';
+        return back();
     }
 
     /**
@@ -218,7 +199,23 @@ class TransaksiController extends Controller
 
     public function struk()
     {
-        return view('struk');
+        $auth = Auth::user();
+        $transaksi = Transaksi::latest()->first();
+
+        // dd($transaksi);
+        $alamat = Outlet::where('id', $auth->id_outlet)->first();
+        // $detail = DetailTransaksi::where('id_transaksi', $transaksi->id)->first();
+        $member = Member::where('id', $transaksi->id_member)->first();
+
+        $struks = DetailTransaksi::join('transaksis', 'detail_transaksis.id_transaksi', '=', 'transaksis.id')
+            ->join('pakets', 'detail_transaksis.id_paket', '=', 'pakets.id')
+            ->where('transaksis.id', $transaksi->id)
+            ->select(['detail_transaksis.*', 'pakets.*', 'transaksis.*'])
+            ->get();
+
+        // dd($struks);
+
+        return view('struk', compact('member', 'struks', 'alamat', 'transaksi'));
     }
     public function show(Transaksi $transaksi)
     {

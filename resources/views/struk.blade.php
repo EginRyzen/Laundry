@@ -8,7 +8,8 @@
     <title>Invoice</title>
     <style>
         .container {
-            width: 300px;
+            width: 70mm;
+            height: 440mm;
             position: absolute;
             left: 50%;
             /* width:200px;
@@ -21,9 +22,18 @@
             text-align: center;
         }
 
-        h2,
+        h2 {
+            margin: 0;
+            font-size: 12pt;
+        }
+
         p {
             margin: 0;
+            font-size: 8pt;
+        }
+
+        small {
+            font-size: 8pt;
         }
 
         .flex-container-1 {
@@ -37,15 +47,15 @@
 
         .flex-container-1 .right {
             text-align: right;
-            width: 200px;
+            width: 60mm;
         }
 
         .flex-container-1 .left {
-            width: 200px;
+            width: 15mm;
         }
 
         .flex-container {
-            width: 300px;
+            width: 70mm;
             display: flex;
         }
 
@@ -53,6 +63,7 @@
             -ms-flex: 1;
             /* IE 10 */
             flex: 1;
+            font-size: 10pt;
         }
 
         ul {
@@ -61,6 +72,7 @@
 
         ul li {
             display: block;
+            font-size: 10pt;
         }
 
         hr {
@@ -81,7 +93,7 @@
 
 <body>
     <div class="container">
-        <div class="header" style="margin-bottom: 30px;">
+        <div class="header" style="margin-bottom: 10px;">
             <h2>{{ $alamat->nama }}</h2>
             <small>{{ $alamat->alamat }}
             </small>
@@ -107,7 +119,7 @@
         </div>
         <hr>
         <div class="flex-container" style="margin-bottom: 10px; text-align:right;">
-            <div style="text-align: left;">Nama Product</div>
+            <div style="text-align: left;">Nama</div>
             <div>Harga/Qty</div>
             <div>Total</div>
         </div>
@@ -126,7 +138,7 @@
             <br>
         @endforeach
         <hr>
-        <div class="flex-container" style="text-align: right; margin-top: 10px;">
+        <div class="flex-container" style="text-align: right; margin-top: 5px;">
             <div>
                 <ul>
                     <li>Diskon</li>
@@ -137,30 +149,43 @@
             </div>
             <div style="text-align: right;">
                 <ul>
-                    <li>Rp. {{ number_format($struk->diskon, 0, ',', '.') }} </li>
-                    <li>Rp. {{ number_format($struk->biaya_tambahan, 0, ',', '.') }}</li>
-                    <li>Rp. {{ number_format($struk->pajak, 0, ',', '.') }}</li>
+                    <li>Rp. {{ number_format($transaksi->diskon, 0, ',', '.') }} </li>
+                    <li>Rp. {{ number_format($transaksi->biaya_tambahan, 0, ',', '.') }}</li>
+                    <li>Rp. {{ number_format($transaksi->pajak, 0, ',', '.') }}</li>
                     <li>Rp.
-                        {{ number_format($total + $struk->biaya_tambahan - $struk->diskon + $struk->pajak, 0, ',', '.') }}
+                        {{ number_format($total + $transaksi->biaya_tambahan - $transaksi->diskon + $transaksi->pajak, 0, ',', '.') }}
                     </li>
                 </ul>
             </div>
         </div>
         <hr>
-        <div class="header" style="margin-top: 50px;">
+        <div class="header" style="margin-top: 5px;">
             <h3>Terimakasih</h3>
             <p>Silahkan berkunjung kembali</p>
         </div>
     </div>
     <script>
-        setTimeout(function() {
-            window.print();
-        }, 500);
-        window.onfocus = function() {
+        if (!localStorage.getItem('reloaded')) {
+            localStorage.setItem('reloaded', 'yes');
+            window.location.reload();
+        } else {
+            localStorage.removeItem('reloaded');
+
             setTimeout(function() {
+                window.print();
+
                 window.close();
-            }, 10000);
+            }, 500);
         }
+        // window.onfocus = function() {
+        // setTimeout(function() {
+        //     var url = "{{ url('laundry/transaksi') }}";
+
+        //     // Membuka URL dalam tab baru
+        //     window.open(url, '_blank');
+        //     window.close();
+        // }, 500);
+        // }
     </script>
 </body>
 

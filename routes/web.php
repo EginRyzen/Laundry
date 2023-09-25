@@ -8,6 +8,7 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\OutletController;
 use App\Http\Controllers\PaketController;
 use App\Http\Controllers\TransaksiController;
+use App\Models\Transaksi;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,12 +41,13 @@ Route::group(['prefix' => 'laundry', 'middleware' => ['auth']], function () {
     Route::resource('transaksidetail', DetailTransaksiController::class);
 
     Route::resource('transaksi', TransaksiController::class);
+    // Route::post('tai', [TransaksiController::class, 'store']);
     Route::resource('member', MemberController::class);
     Route::get('belipaket', [TransaksiController::class, 'belipaket']);
     Route::get('tambah/{id}', [TransaksiController::class, 'tambah']);
     Route::get('kurang/{id}', [TransaksiController::class, 'kurang']);
     Route::get('hapus/{id}', [TransaksiController::class, 'hapus']);
-    Route::get('struk', [TransaksiController::class, 'struk']);
+    Route::get('struk', [TransaksiController::class, 'struk'])->name('struk');
 
     // if (Auth::user()) {
     //     # code...
