@@ -137,8 +137,10 @@ class TransaksiController extends Controller
         $jadipajak = ($total + $tambahan + $diskon) * $pajak;
         $invoice = date('YmdHis');
 
+        // dd($totalharga);
 
-        if ($dibayar >= $totalharga) {
+
+        if ($dibayar > $totalharga) {
             $data = [
                 'id_outlet' => $user->id_outlet,
                 'id_member' => $request->id_member,

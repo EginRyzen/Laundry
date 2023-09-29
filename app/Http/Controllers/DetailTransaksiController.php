@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Paket;
 use App\Models\Member;
+use App\Models\Outlet;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use App\Models\DetailTransaksi;
@@ -32,20 +33,25 @@ class DetailTransaksiController extends Controller
         // $members = Member::all();
 
         if ($user->role == 'admin') {
-            $transaksi = Transaksi::join('members', 'transaksis.id_member', '=', 'members.id')
+            $transaksi = DetailTransaksi::join('transaksis', 'detail_transaksis.id_transaksi', '=', 'transaksis.id')
                 ->join('outlets', 'transaksis.id_outlet', '=', 'outlets.id')
+                ->join('pakets', 'detail_transaksis.id_paket', '=', 'pakets.id')
+                ->join('members', 'transaksis.id_member', '=', 'members.id')
                 // ->where('transaksis.id_outlet', $user->id_outlet)
-                ->select(['transaksis.*', 'members.nama', 'outlets.nama as outlet_nama'])
+                ->select(['transaksis.*', 'members.nama', 'outlets.nama as outlet_nama', 'detail_transaksis.*', 'pakets.*'])
                 ->get();
 
             return view('Deatail.select', compact('transaksi'));
         }
         if ($user->role == 'kasir') {
 
-            $transaksi = Transaksi::join('members', 'transaksis.id_member', '=', 'members.id')
+            $transaksi = DetailTransaksi::join('transaksis', 'detail_transaksis.id_transaksi', '=', 'transaksis.id')
                 ->join('outlets', 'transaksis.id_outlet', '=', 'outlets.id')
+                ->join('pakets', 'detail_transaksis.id_paket', '=', 'pakets.id')
+                ->join('members', 'transaksis.id_member', '=', 'members.id')
                 ->where('transaksis.id_outlet', $user->id_outlet)
-                ->select(['transaksis.*', 'members.nama', 'outlets.nama as outlet_nama'])
+                ->orderBy('transaksis.dibayar', 'DESC')
+                ->select(['transaksis.*', 'members.nama', 'members.telp', 'outlets.nama as outlet_nama', 'detail_transaksis.*', 'pakets.*'])
                 ->get();
 
             return view('Deatail.select', compact('transaksi'));
@@ -79,9 +85,26 @@ class DetailTransaksiController extends Controller
      * @param  \App\Models\DetailTransaksi  $detailTransaksi
      * @return \Illuminate\Http\Response
      */
-    public function show(DetailTransaksi $detailTransaksi)
+    public function show($id_transaksi)
     {
-        //
+        $auth = Auth::user();
+        $transaksi = Transaksi::where('id', $id_transaksi)->first();
+
+        $alamat = Outlet::where('id', $auth->id_outlet)->first();
+
+        $member = Member::where('id', $transaksi->id_member)->first();
+
+        // dd($member);
+
+        $struks = DetailTransaksi::join('transaksis', 'detail_transaksis.id_transaksi', '=', 'transaksis.id')
+            ->join('pakets', 'detail_transaksis.id_paket', '=', 'pakets.id')
+            ->where('transaksis.id', $id_transaksi)
+            ->select(['detail_transaksis.*', 'pakets.*', 'transaksis.*'])
+            ->get();
+
+        // dd($struks);
+
+        return view('struk', compact('member', 'struks', 'alamat', 'transaksi'));
     }
 
     /**

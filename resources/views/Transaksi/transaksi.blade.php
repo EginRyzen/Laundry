@@ -85,6 +85,20 @@
                 @csrf
                 <input type="hidden" class="form-control" name="total" id="totals" value="{{ $total }}"
                     onkeyup="pesan();">
+                <div class="row px-3 mb-4">
+
+                    {{-- Total Harga --}}
+                    {{-- <input type="text" name="totalharga" id="totalinput"> --}}
+                    <div class="col-md-3">
+                        <span for="">Jumlah Keseluruhan : </span><br>
+                        <span for="">Kembalian : </span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <span type="hidden" name="totalharga" value="" id="totalSpan"></span>
+                        <input type="hidden" name="totalharga" value="" id="totalharga"><br>
+                        <span type="text" name="" value="" id="kembali"></span>
+                    </div>
+                </div>
                 <div class="row px-3">
 
                     {{-- <div class="col-md-2 mt-1">
@@ -127,26 +141,13 @@
                     <div class="col-md-4 mb-3">
                         <textarea class="form-control form-control-user" name="keterangan" aria-label="With textarea"></textarea>
                     </div>
-                </div>
-                {{-- <p class=" px-3">Total Harga Belum Termasuk Pajak : {{ $total }}</p> --}}
-                <div class="row px-3">
-
-                    {{-- Total Harga --}}
-                    {{-- <input type="text" name="totalharga" id="totalinput"> --}}
-                    <div class="col-md-2">
-                        <span for="">Jumlah Keseluruhan : </span>
-                        <span for="">Kembalian : </span>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <span type="text" disabled name="jumlah" value="" id="totalSpan"></span><br>
-                        <span type="text" name="" value="" id="kembali"></span>
-                    </div>
                     <div class="col-md-6 mb-3">
                         <div class="mt-1">
                             <button class="float-right btn btn-success" id="btn" type="submit">Transaksi</button>
                         </div>
                     </div>
                 </div>
+                {{-- <p class=" px-3">Total Harga Belum Termasuk Pajak : {{ $total }}</p> --}}
             </form>
         </div>
     </div>
@@ -168,6 +169,7 @@
 
             var totalSpan = document.getElementById('totalSpan');
             var kembali = document.getElementById('kembali');
+            var totalharga = document.getElementById('totalharga');
 
             if (isNaN(kembalian)) {
                 kembalian = 0;
@@ -175,6 +177,7 @@
 
             kembali.innerHTML = 'Rp. ' + Math.ceil(kembalian);
             totalSpan.innerHTML = 'Rp. ' + Math.ceil(jumlah);
+            totalharga.value = Math.ceil(jumlah);
         }
 
         var btn = document.getElementById('btn');

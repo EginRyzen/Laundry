@@ -125,6 +125,7 @@
                                 <th>Nama Paket</th>
                                 <th>Tanggal</th>
                                 <th>Qty</th>
+                                <th>Total</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -136,6 +137,7 @@
                                     <td>{{ $generate->nama_paket }}</td>
                                     <td>{{ $generate->tgl }}</td>
                                     <td>{{ $generate->qty }}</td>
+                                    <td>{{ $generate->harga * $generate->qty }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

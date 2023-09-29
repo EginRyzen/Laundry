@@ -18,11 +18,12 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Toko</th>
+                                <th>NoHP</th>
                                 <th>Member</th>
                                 {{-- <th>BatasPembayaran</th> --}}
                                 <th>Tanggal</th>
                                 <th>TglBayar</th>
+                                <th>Biaya</th>
                                 <th>Status</th>
                                 <th>Bayar</th>
                                 <th>Update</th>
@@ -35,17 +36,27 @@
                             @foreach ($transaksi as $row)
                                 <tr>
                                     <td>{{ $no++ }}.</td>
-                                    <td>{{ $row->outlet_nama }}</td>
+                                    <td>{{ $row->telp }}</td>
                                     <td>{{ $row->nama }}</td>
                                     {{-- <td>{{ $row->batas_waktu }}</td> --}}
                                     <td>{{ $row->tgl }}</td>
                                     <td>{{ $row->tgl_bayar }}</td>
+                                    <td>{{ $row->harga * $row->qty + $row->pajak + $row->biaya_tambahan - $row->diskon }}
+                                    </td>
                                     <td>{{ $row->status }}</td>
-                                    <td>{{ $row->dibayar }}</td>
+                                    <td>
+                                        @if ($row->dibayar == 'bayar')
+                                            <button class="btn btn-warning">Lunas</button>
+                                        @else
+                                            <button class="btn btn-danger">Belum</button>
+                                        @endif
+                                    </td>
                                     <td class="text-center">
                                         <a data-toggle="modal" data-target="#update{{ $row->id }}"
                                             href="{{ url('laundry/transaksidetail/' . $row->id . '/edit') }}"
                                             class="mr-2 text-warning"><i class="fas fa-edit"></i></a>
+                                        <a href="{{ url('laundry/struk/' . $row->id_transaksi) }}" target="_blank"
+                                            class="mr-2 text-warning"><i class="fas fa-download fa-sm"></i></a>
                                     </td>
                                 </tr>
                                 <div class="modal fade" id="update{{ $row->id }}" tabindex="-1" role="dialog"

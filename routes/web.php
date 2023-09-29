@@ -8,6 +8,7 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\OutletController;
 use App\Http\Controllers\PaketController;
 use App\Http\Controllers\TransaksiController;
+use App\Models\DetailTransaksi;
 use App\Models\Transaksi;
 
 /*
@@ -49,9 +50,8 @@ Route::group(['prefix' => 'laundry', 'middleware' => ['auth']], function () {
     Route::get('hapus/{id}', [TransaksiController::class, 'hapus']);
     Route::get('struk', [TransaksiController::class, 'struk'])->name('struk');
 
-    // if (Auth::user()) {
-    //     # code...
-    // }
+
+    Route::get('struk/{id_transaksi}', [DetailTransaksiController::class, 'show']);
 
     Route::group(['middleware' => ['CekLogin:admin']], function () {
         // Register

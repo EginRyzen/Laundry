@@ -8,7 +8,7 @@
     <title>Invoice</title>
     <style>
         .container {
-            width: 70mm;
+            width: 60mm;
             height: 440mm;
             position: absolute;
             left: 50%;
@@ -24,7 +24,7 @@
 
         h2 {
             margin: 0;
-            font-size: 12pt;
+            font-size: 16pt;
         }
 
         p {
@@ -47,7 +47,7 @@
 
         .flex-container-1 .right {
             text-align: right;
-            width: 60mm;
+            width: 50mm;
         }
 
         .flex-container-1 .left {
@@ -55,7 +55,7 @@
         }
 
         .flex-container {
-            width: 70mm;
+            width: 60mm;
             display: flex;
         }
 
@@ -106,6 +106,7 @@
                     <li>No Order</li>
                     <li>Customer</li>
                     <li>Tanggal</li>
+                    <li>Status</li>
                 </ul>
             </div>
             <div class="right">
@@ -114,6 +115,7 @@
                     <li> {{ $transaksi->kode_invoice }} </li>
                     <li> {{ $member->nama }} </li>
                     <li> {{ date('d-m-Y') }} </li>
+                    <li> {{ $transaksi->dibayar }} </li>
                 </ul>
             </div>
         </div>
@@ -138,7 +140,7 @@
             <br>
         @endforeach
         <hr>
-        <div class="flex-container" style="text-align: right; margin-top: 5px;">
+        <div class="flex-container" style="margin-top: 5px;">
             <div>
                 <ul>
                     <li>Diskon</li>
