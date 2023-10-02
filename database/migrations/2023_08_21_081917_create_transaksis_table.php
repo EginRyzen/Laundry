@@ -22,7 +22,7 @@ class CreateTransaksisTable extends Migration
             $table->unsignedBigInteger('id_user')->nullable();
             $table->foreign('id_user')->references('id')->on('users');
             $table->string('kode_invoice')->nullable();
-            $table->dateTime('tgl')->nullable();
+            $table->date('tgl')->nullable();
             $table->dateTime('batas_waktu')->nullable();
             $table->dateTime('tgl_bayar')->nullable();
             $table->integer('biaya_tambahan')->nullable();

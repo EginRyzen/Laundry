@@ -20,17 +20,9 @@ class DetailTransaksiController extends Controller
      */
     public function index()
     {
-        // if (!Auth::check()) {
-        //     redirect('/');
-        // }
-
         $user = Auth::user();
 
-        // $tokoh = Outlet::where('id', $user->id_outlet);
-
         $pakets = Paket::where('id_outlet', $user->id_outlet)->get();
-
-        // $members = Member::all();
 
         if ($user->role == 'admin') {
             $transaksi = DetailTransaksi::join('transaksis', 'detail_transaksis.id_transaksi', '=', 'transaksis.id')
@@ -45,13 +37,9 @@ class DetailTransaksiController extends Controller
         }
         if ($user->role == 'kasir') {
 
-            $transaksi = DetailTransaksi::join('transaksis', 'detail_transaksis.id_transaksi', '=', 'transaksis.id')
-                ->join('outlets', 'transaksis.id_outlet', '=', 'outlets.id')
-                ->join('pakets', 'detail_transaksis.id_paket', '=', 'pakets.id')
-                ->join('members', 'transaksis.id_member', '=', 'members.id')
+            $transaksi = Transaksi::join('members', 'transaksis.id_member', '=', 'members.id')
                 ->where('transaksis.id_outlet', $user->id_outlet)
-                ->orderBy('transaksis.dibayar', 'DESC')
-                ->select(['transaksis.*', 'members.nama', 'members.telp', 'outlets.nama as outlet_nama', 'detail_transaksis.*', 'pakets.*'])
+                ->select(['transaksis.*', 'members.nama'])
                 ->get();
 
             return view('Deatail.select', compact('transaksi'));
@@ -63,9 +51,40 @@ class DetailTransaksiController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $user = Auth::user();
+
+        $pakets = Paket::where('id_outlet', $user->id_outlet)->get();
+
+        if ($user->role == 'admin') {
+            $transaksi = DetailTransaksi::join('transaksis', 'detail_transaksis.id_transaksi', '=', 'transaksis.id')
+                ->join('outlets', 'transaksis.id_outlet', '=', 'outlets.id')
+                ->join('pakets', 'detail_transaksis.id_paket', '=', 'pakets.id')
+                ->join('members', 'transaksis.id_member', '=', 'members.id')
+                // ->where('transaksis.id_outlet', $user->id_outlet)
+                ->select(['transaksis.*', 'members.nama', 'outlets.nama as outlet_nama', 'detail_transaksis.*', 'pakets.*'])
+                ->get();
+
+            return view('Deatail.select', compact('transaksi'));
+        }
+        if ($user->role == 'kasir') {
+
+            $tglmulai = $request->tglmulai;
+            $tglakhir = $request->tglakhir;
+
+            // dd($tglmulai);
+
+            $transaksi = Transaksi::join('members', 'transaksis.id_member', '=', 'members.id')
+                ->where('transaksis.id_outlet', $user->id_outlet)
+                ->whereBetween('transaksis.tgl', [$tglmulai, $tglakhir])
+                ->select(['transaksis.*', 'members.nama'])
+                ->get();
+
+            // dd($transaksi);
+
+            return view('Deatail.select', compact('transaksi'));
+        }
     }
 
     /**
@@ -85,24 +104,20 @@ class DetailTransaksiController extends Controller
      * @param  \App\Models\DetailTransaksi  $detailTransaksi
      * @return \Illuminate\Http\Response
      */
-    public function show($id_transaksi)
+    public function show($id)
     {
         $auth = Auth::user();
-        $transaksi = Transaksi::where('id', $id_transaksi)->first();
+        $transaksi = Transaksi::where('id', $id)->first();
 
         $alamat = Outlet::where('id', $auth->id_outlet)->first();
 
         $member = Member::where('id', $transaksi->id_member)->first();
 
-        // dd($member);
-
         $struks = DetailTransaksi::join('transaksis', 'detail_transaksis.id_transaksi', '=', 'transaksis.id')
             ->join('pakets', 'detail_transaksis.id_paket', '=', 'pakets.id')
-            ->where('transaksis.id', $id_transaksi)
+            ->where('transaksis.id', $id)
             ->select(['detail_transaksis.*', 'pakets.*', 'transaksis.*'])
             ->get();
-
-        // dd($struks);
 
         return view('struk', compact('member', 'struks', 'alamat', 'transaksi'));
     }
@@ -115,9 +130,13 @@ class DetailTransaksiController extends Controller
      */
     public function edit($id)
     {
-        $data = Transaksi::where('id', '=', $id)->first();
-
-        return view('Deatail.update', compact('data'));
+        $data = Transaksi::join('detail_transaksis', 'transaksis.id', '=', 'detail_transaksis.id_transaksi')
+            ->join('pakets', 'detail_transaksis.id_paket', '=', 'pakets.id')
+            ->join('members', 'transaksis.id_member', '=', 'members.id')
+            ->where('transaksis.id', $id)
+            ->select(['transaksis.*', 'members.*', 'detail_transaksis.*', 'pakets.*'])
+            ->get();
+        return view('Deatail.detail', compact('data'));
     }
 
     /**
@@ -130,24 +149,33 @@ class DetailTransaksiController extends Controller
     public function update(Request $request, $id)
     {
 
-        if ($request->dibayar == 'belum_bayar') {
-            Transaksi::where('id', $id)->update([
-                'tgl_bayar' => null,
-                'status' => $request->status,
-                'dibayar' => $request->dibayar,
-            ]);
-        }
-        if ($request->dibayar == 'bayar') {
-            Transaksi::where('id', $id)->update([
-                'tgl_bayar' => now(),
-                'status' => $request->status,
-                'dibayar' => $request->dibayar,
-            ]);
-        }
+        $data = [
+            'status' => $request->status,
+        ];
+
+        Transaksi::where('id', $id)->update($data);
+
         Alert::info('Warning Title', 'Warning Message');
 
 
         alert()->info('Trasnsaksi', 'Berhasil Untuk Di Update');
+        return redirect('laundry/transaksidetail');
+    }
+
+    public function updatebayar(Request $request, $id)
+    {
+        $total = $request->total;
+        $bayar = $request->bayar;
+
+        if ($bayar > $total) {
+            $data = [
+                'dibayar' => 'bayar',
+                'tgl_bayar' => now()
+            ];
+
+            Transaksi::where('id', $id)->update($data);
+        }
+
         return redirect('laundry/transaksidetail');
     }
 

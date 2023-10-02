@@ -40,6 +40,7 @@ Route::group(['prefix' => 'laundry', 'middleware' => ['auth']], function () {
 
     Route::get('dasbord', [FrontController::class, 'dasbord']);
     Route::resource('transaksidetail', DetailTransaksiController::class);
+    Route::post('updatebayar/{id}', [DetailTransaksiController::class, 'updatebayar']);
 
     Route::resource('transaksi', TransaksiController::class);
     // Route::post('tai', [TransaksiController::class, 'store']);
@@ -51,7 +52,7 @@ Route::group(['prefix' => 'laundry', 'middleware' => ['auth']], function () {
     Route::get('struk', [TransaksiController::class, 'struk'])->name('struk');
 
 
-    Route::get('struk/{id_transaksi}', [DetailTransaksiController::class, 'show']);
+    Route::get('struk/{id}', [DetailTransaksiController::class, 'show']);
 
     Route::group(['middleware' => ['CekLogin:admin']], function () {
         // Register

@@ -212,7 +212,7 @@ class TransaksiController extends Controller
         $struks = DetailTransaksi::join('transaksis', 'detail_transaksis.id_transaksi', '=', 'transaksis.id')
             ->join('pakets', 'detail_transaksis.id_paket', '=', 'pakets.id')
             ->where('transaksis.id', $transaksi->id)
-            ->select(['detail_transaksis.*', 'pakets.*', 'transaksis.*'])
+            ->select(['detail_transaksis.*', 'pakets.harga', 'transaksis.*'])
             ->get();
 
         // dd($struks);
