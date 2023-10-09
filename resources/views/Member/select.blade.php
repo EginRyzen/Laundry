@@ -23,7 +23,7 @@
                                 <th>Nama</th>
                                 <th>Alamat</th>
                                 <th>Telp</th>
-                                <th>Jenis Kelamin</th>
+                                <th>JK</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -39,13 +39,13 @@
                                     <td>{{ $member->telp }}</td>
                                     <td>{{ $member->jenis_kelamin }}</td>
                                     <td class="text-center d-flex">
-                                        <a href="" data-toggle="modal" data-target="#update"
+                                        <a href="" data-toggle="modal" data-target="#update{{ $member->id }}"
                                             class="mr-2 text-warning"><i class="fas fa-edit"></i></a>
                                         <a href="{{ url('laundry/member/' . $member->id) }}" onclick="return hapus()"
                                             class="ml-2 text-danger"><i class="fas fa-trash"></i></a>
                                     </td>
                                 </tr>
-                                <div class="modal fade" id="update" tabindex="-1" role="dialog"
+                                <div class="modal fade" id="update{{ $member->id }}" tabindex="-1" role="dialog"
                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
@@ -60,6 +60,7 @@
                                                 enctype="multipart/form-data">
                                                 @csrf
                                                 @method('PUT')
+                                                {{-- <input type="text" value="{{ $member->id }}"> --}}
                                                 <div class="modal-body">
                                                     <div class="form-group">
                                                         <input type="text" class="form-control form-control-user"
@@ -75,15 +76,18 @@
                                                         <div class="row">
                                                             <div class="col-1">
                                                                 <input type="checkbox" class="form-check-input"
+                                                                    {{ $member->jenis_kelamin == 'L' ? 'checked' : '' }}
                                                                     name="jenis_kelamin" value="L">
                                                                 <label class="form-check-label">L</label>
                                                             </div>
                                                             <div class="col-1">
                                                                 <input type="checkbox" class="form-check-input"
+                                                                    {{ $member->jenis_kelamin == 'P' ? 'checked' : '' }}
                                                                     name="jenis_kelamin" value="P">
                                                                 <label class="form-check-label">P</label>
                                                             </div>
                                                         </div>
+
                                                     </div>
                                                     <div class="form-group">
                                                         <input type="number" class="form-control form-control-user"

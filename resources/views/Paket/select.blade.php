@@ -81,13 +81,21 @@
                                                     <div class="form-group mb-3">
                                                         <select class="form-control form-select" name="jenis"
                                                             id="exampleSelect" placeholder="Select Option">
-                                                            <option value="{{ $paket->jenis }}" selected disabled>
-                                                                {{ $paket->jenis }}</option>
-                                                            <option value="kiloan">Kiloan</option>
-                                                            <option value="selimut">Selimut</option>
-                                                            <option value="kaos">Kaos</option>
-                                                            <option value="bed_cover">Bed Cover</option>
-                                                            <option value="lain">Lain</option>
+                                                            <option value="kiloan"
+                                                                {{ $paket->jenis == 'kiloan' ? 'selected' : '' }}>Kiloan
+                                                            </option>
+                                                            <option value="selimut"
+                                                                {{ $paket->jenis == 'selimut' ? 'selected' : '' }}>Selimut
+                                                            </option>
+                                                            <option value="kaos"
+                                                                {{ $paket->jenis == 'kaos' ? 'selected' : '' }}>Kaos
+                                                            </option>
+                                                            <option value="bed_cover"
+                                                                {{ $paket->jenis == 'bed_cover' ? 'selected' : '' }}>Bed
+                                                                Cover</option>
+                                                            <option value="lain"
+                                                                {{ $paket->jenis == 'lain' ? 'selected' : '' }}>Lain
+                                                            </option>
                                                         </select>
                                                     </div>
                                                     <div class="form-group mb-3">

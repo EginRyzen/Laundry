@@ -39,6 +39,7 @@ class DetailTransaksiController extends Controller
 
             $transaksi = Transaksi::join('members', 'transaksis.id_member', '=', 'members.id')
                 ->where('transaksis.id_outlet', $user->id_outlet)
+                ->orderBy('transaksis.dibayar', 'DESC')
                 ->select(['transaksis.*', 'members.nama'])
                 ->get();
 
@@ -58,12 +59,13 @@ class DetailTransaksiController extends Controller
         $pakets = Paket::where('id_outlet', $user->id_outlet)->get();
 
         if ($user->role == 'admin') {
-            $transaksi = DetailTransaksi::join('transaksis', 'detail_transaksis.id_transaksi', '=', 'transaksis.id')
-                ->join('outlets', 'transaksis.id_outlet', '=', 'outlets.id')
-                ->join('pakets', 'detail_transaksis.id_paket', '=', 'pakets.id')
-                ->join('members', 'transaksis.id_member', '=', 'members.id')
+            $tglmulai = $request->tglmulai;
+            $tglakhir = $request->tglakhir;
+
+            $transaksi = Transaksi::join('members', 'transaksis.id_member', '=', 'members.id')
                 // ->where('transaksis.id_outlet', $user->id_outlet)
-                ->select(['transaksis.*', 'members.nama', 'outlets.nama as outlet_nama', 'detail_transaksis.*', 'pakets.*'])
+                ->whereBetween('transaksis.tgl', [$tglmulai, $tglakhir])
+                ->select(['transaksis.*', 'members.nama'])
                 ->get();
 
             return view('Deatail.select', compact('transaksi'));
@@ -72,16 +74,33 @@ class DetailTransaksiController extends Controller
 
             $tglmulai = $request->tglmulai;
             $tglakhir = $request->tglakhir;
+            $bayar = $request->dibayar;
 
-            // dd($tglmulai);
+            if ($tglakhir == null && $tglmulai == null && $bayar == null) {
+                return redirect('laundry/transaksidetail');
+            }
 
             $transaksi = Transaksi::join('members', 'transaksis.id_member', '=', 'members.id')
                 ->where('transaksis.id_outlet', $user->id_outlet)
-                ->whereBetween('transaksis.tgl', [$tglmulai, $tglakhir])
+                ->where(function ($filter) use ($tglmulai, $tglakhir, $bayar,) {
+                    if (empty($bayar)) {
+                        $filter->whereBetween('transaksis.tgl', [$tglmulai, $tglakhir])
+                            ->orWhere('transaksis.tgl', $tglmulai);
+                    } elseif ($bayar) {
+                        $filter->orWhere('transaksis.dibayar', $bayar);
+                        if ($tglmulai && $tglakhir) {
+                            $filter->whereBetween('transaksis.tgl', [$tglmulai, $tglakhir])
+                                ->where('transaksis.dibayar', $bayar);
+                        } elseif ($tglmulai || $tglakhir) {
+                            $filter->where('transaksis.tgl', $tglmulai);
+                            $filter->orWhere('transaksis.tgl', $tglakhir);
+                            $filter->where('transaksis.dibayar', $bayar);
+                        }
+                    }
+                })
+                ->orderBy('transaksis.dibayar', 'DESC')
                 ->select(['transaksis.*', 'members.nama'])
                 ->get();
-
-            // dd($transaksi);
 
             return view('Deatail.select', compact('transaksi'));
         }

@@ -12,16 +12,29 @@
                         <div class="col-md-2">
                             <h6 class="m-0 font-weight-bold mt-1">Data Transaksi</h6>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-2 mb-3">
                             <label class="form-label">Tanggal Mulai</label>
                             <input type="date" name="tglmulai" class="form-control">
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-2 mb-3">
                             <label class="form-label">Tanggal Akhir</label>
                             <input type="date" name="tglakhir" class="form-control">
                         </div>
+                        <div class="col-md-2 mb-3">
+                            <label class="form-label">Dibayar</label>
+                            <select name="dibayar" class="form-control">
+                                <option value="" disabled selected>---- Pilih ---</option>
+                                <option value="bayar">
+                                    Sudah Bayar
+                                </option>
+                                <option value="belum_bayar">
+                                    Belum Bayar
+                                </option>
+                            </select>
+                        </div>
                         <div class="col-md-2 mt-4 p-2">
-                            <button type="submit" class="btn btn-primary">Cari</button>
+                            <button type="submit" class="btn btn-primary">Filter</button>
+                            <a href="{{ url('laundry/transaksidetail') }}" type="submit" class="btn btn-warning">Reset</a>
                         </div>
                     </div>
                 </form>
@@ -33,6 +46,7 @@
                             <tr>
                                 <th>No</th>
                                 <th>Member</th>
+                                <th>Outlet</th>
                                 <th>TanggalTransaksi</th>
                                 <th>BatasPembayaran</th>
                                 <th>TglBayar</th>
@@ -49,6 +63,7 @@
                                     <td>{{ $no++ }}.</td>
                                     <td><a href="{{ url('laundry/transaksidetail/' . $row->id . '/edit') }}"
                                             class="font-weight-bold"><u>{{ $row->nama }}</u></a></td>
+                                    <td>{{ $row->id_outlet }}</td>
                                     <td>{{ $row->tgl }}</td>
                                     <td>{{ $row->batas_waktu }}</td>
                                     <td>{{ $row->tgl_bayar }}</td>
